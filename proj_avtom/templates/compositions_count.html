@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+
+{% block title %}Произведения ансамбля - Музыкальный магазин{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">
+            <i class="fas fa-list"></i>
+            Количество музыкальных произведений ансамбля
+        </h1>
+        <p class="card-subtitle">
+            Выберите ансамбль для просмотра количества его музыкальных произведений
+        </p>
+    </div>
+    
+    <form method="GET" class="mb-4">
+        <div class="form-group">
+            <label for="ensemble_id" class="form-label">Выберите ансамбль:</label>
+            <div class="select-wrapper">
+                <select name="ensemble_id" id="ensemble_id" class="form-control select" required>
+                    <option value="">-- Выберите ансамбль --</option>
+                    {% for ensemble in ensembles %}
+                        <option value="{{ ensemble.id }}" 
+                                {% if selected_ensemble and selected_ensemble.id == ensemble.id %}selected{% endif %}>
+                            {{ ensemble.name }} ({{ ensemble.type }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-search"></i>
+            Показать произведения
+        </button>
+    </form>
+    
+    {% if selected_ensemble %}
+        <div class="result-section">
+            <div class="ensemble-info card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-users"></i>
+                        {{ selected_ensemble.name }}
+                    </h2>
+                </div>
+                <div class="ensemble-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Тип ансамбля:</span>
+                        <span class="detail-value">{{ selected_ensemble.type }}</span>
+                    </div>
+                    {% if selected_ensemble.founded_year %}
+                    <div class="detail-row">
+                        <span class="detail-label">Год основания:</span>
+                        <span class="detail-value">{{ selected_ensemble.founded_year }}</span>
+                    </div>
+                    {% endif %}
+                    {% if selected_ensemble.country %}
+                    <div class="detail-row">
+                        <span class="detail-label">Страна:</span>
+                        <span class="detail-value">{{ selected_ensemble.country }}</span>
+                    </div>
+                    {% endif %}
+                    {% if selected_ensemble.description %}
+                    <div class="detail-row">
+                        <span class="detail-label">Описание:</span>
+                        <span class="detail-value">{{ selected_ensemble.description }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="compositions-summary card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-music"></i>
+                        Музыкальные произведения
+                    </h3>
+                </div>
+                <div class="summary-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">{{ compositions|length }}</span>
+                        <span class="stat-label">Всего произведений</span>
+                    </div>
+                </div>
+            </div>
+            
+            {% if compositions %}
+                <div class="compositions-list card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-list-ul"></i>
+                            Список произведений
+                        </h3>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th onclick="sortTable('compositions-table', 0)">
+                                        <i class="fas fa-sort"></i> Название
+                                    </th>
+                                    <th onclick="sortTable('compositions-table', 1)">
+                                        <i class="fas fa-sort"></i> Жанр
+                                    </th>
+                                    <th onclick="sortTable('compositions-table', 2)">
+                                        <i class="fas fa-sort"></i> Год создания
+                                    </th>
+                                    <th onclick="sortTable('compositions-table', 3)">
+                                        <i class="fas fa-sort"></i> Композитор
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="compositions-table">
+                                {% for composition in compositions %}
+                                <tr>
+                                    <td>{{ composition.title }}</td>
+                                    <td>{{ composition.genre or 'Не указан' }}</td>
+                                    <td>{{ composition.year_composed or 'Не указан' }}</td>
+                                    <td>{{ composition.composer_name or 'Не указан' }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% else %}
+                <div class="no-results card">
+                    <div class="text-center">
+                        <i class="fas fa-music" style="font-size: 3rem; color: #6c757d; margin-bottom: 20px;"></i>
+                        <h3>Произведения не найдены</h3>
+                        <p>У выбранного ансамбля нет записанных произведений в базе данных.</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.result-section {
+    margin-top: 30px;
+}
+
+.ensemble-info {
+    margin-bottom: 25px;
+}
+
+.ensemble-details {
+    display: grid;
+    gap: 15px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #495057;
+}
+
+.detail-value {
+    color: #6c757d;
+}
+
+.compositions-summary {
+    margin-bottom: 25px;
+}
+
+.summary-stats {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #667eea;
+    margin-bottom: 10px;
+}
+
+.stat-label {
+    color: #6c757d;
+    font-size: 1.1rem;
+}
+
+.compositions-list {
+    margin-bottom: 25px;
+}
+
+.no-results {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.no-results h3 {
+    color: #6c757d;
+    margin-bottom: 15px;
+}
+
+.no-results p {
+    color: #6c757d;
+}
+
+.table th {
+    cursor: pointer;
+    user-select: none;
+}
+
+.table th:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.table th i {
+    margin-left: 5px;
+    opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+    .detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .detail-label {
+        font-size: 0.9rem;
+    }
+    
+    .table-container {
+        font-size: 0.9rem;
+    }
+}
+</style>
+{% endblock %}

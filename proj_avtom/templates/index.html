@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}Главная - Музыкальный магазин{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="card">
+        <div class="card-header text-center">
+            <h1 class="card-title">
+                <i class="fas fa-music"></i>
+                Добро пожаловать в музыкальный магазин
+            </h1>
+            <p class="card-subtitle">
+                Управление базой данных музыкантов, ансамблей и музыкальных произведений
+            </p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.total_ensembles }}</div>
+                <div class="stat-label">Ансамблей</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.total_compositions }}</div>
+                <div class="stat-label">Произведений</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.total_records }}</div>
+                <div class="stat-label">Пластинок</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ stats.total_musicians }}</div>
+                <div class="stat-label">Музыкантов</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="features-section">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Доступные функции</h2>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-list"></i>
+                </div>
+                <h3>Произведения ансамбля</h3>
+                <p>Просмотр количества музыкальных произведений заданного ансамбля</p>
+                <a href="{{ url_for('compositions_count') }}" class="btn btn-primary">
+                    <i class="fas fa-arrow-right"></i>
+                    Перейти
+                </a>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-compact-disc"></i>
+                </div>
+                <h3>Диски ансамбля</h3>
+                <p>Просмотр названий всех компакт-дисков заданного ансамбля</p>
+                <a href="{{ url_for('ensemble_records') }}" class="btn btn-primary">
+                    <i class="fas fa-arrow-right"></i>
+                    Перейти
+                </a>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h3>Лидеры продаж</h3>
+                <p>Просмотр самых популярных компакт-дисков текущего года</p>
+                <a href="{{ url_for('sales_leaders') }}" class="btn btn-primary">
+                    <i class="fas fa-arrow-right"></i>
+                    Перейти
+                </a>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-edit"></i>
+                </div>
+                <h3>Управление дисками</h3>
+                <p>Добавление, редактирование и удаление данных о компакт-дисках</p>
+                <a href="{{ url_for('manage_records') }}" class="btn btn-primary">
+                    <i class="fas fa-arrow-right"></i>
+                    Перейти
+                </a>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>Управление ансамблями</h3>
+                <p>Добавление, редактирование и удаление данных об ансамблях</p>
+                <a href="{{ url_for('manage_ensembles') }}" class="btn btn-primary">
+                    <i class="fas fa-arrow-right"></i>
+                    Перейти
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.hero-section {
+    margin-bottom: 40px;
+}
+
+.features-section {
+    margin-bottom: 40px;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.feature-card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    border-color: #667eea;
+}
+
+.feature-icon {
+    font-size: 3rem;
+    color: #667eea;
+    margin-bottom: 20px;
+}
+
+.feature-card h3 {
+    color: #495057;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+}
+
+.feature-card p {
+    color: #6c757d;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
