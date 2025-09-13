@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Вход - Музыкальный магазин{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="card-header text-center">
+            <h1 class="card-title">
+                <i class="fas fa-sign-in-alt"></i>
+                Вход в систему
+            </h1>
+            <p class="card-subtitle">
+                Войдите в свой аккаунт для доступа к функциям магазина
+            </p>
+        </div>
+        
+        <form method="POST">
+            <div class="form-group">
+                <label for="username" class="form-label">Имя пользователя</label>
+                <input type="text" name="username" id="username" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="form-label">Пароль</label>
+                <input type="password" name="password" id="password" class="form-control" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-block">
+                <i class="fas fa-sign-in-alt"></i>
+                Войти
+            </button>
+        </form>
+        
+        <div class="auth-footer">
+            <p>Нет аккаунта? <a href="{{ url_for('register') }}">Зарегистрируйтесь</a></p>
+        </div>
+        
+        <div class="demo-accounts">
+            <h4>Демо-аккаунты для тестирования:</h4>
+            <div class="demo-account">
+                <strong>Директор:</strong> admin / admin123
+            </div>
+            <div class="demo-account">
+                <strong>Продавец:</strong> seller1 / seller123
+            </div>
+            <div class="demo-account">
+                <strong>Покупатель:</strong> buyer1 / buyer123
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 140px);
+    padding: 20px;
+}
+
+.auth-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.btn-block {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+}
+
+.auth-footer a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+.demo-accounts {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+}
+
+.demo-accounts h4 {
+    color: #495057;
+    margin-bottom: 15px;
+    font-size: 1rem;
+}
+
+.demo-account {
+    background: #f8f9fa;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: #495057;
+}
+
+@media (max-width: 480px) {
+    .auth-card {
+        padding: 30px 20px;
+    }
+}
+</style>
+{% endblock %}
