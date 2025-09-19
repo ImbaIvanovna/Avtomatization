@@ -560,7 +560,226 @@ def buy_record(record_id):
     finally:
         conn.close()
     
+    return redirect(url_for('personal_cabinet'))
+
+@app.route('/personal_cabinet')
+@role_required(['buyer'])
+def personal_cabinet():
+    """Личный кабинет покупателя"""
+    conn = get_db_connection()
+    
+    # Получаем информацию о пользователе
+    user = conn.execute('SELECT * FROM users WHERE id = ?', (session['user_id'],)).fetchone()
+    
+    # Получаем историю покупок
+    purchases = conn.execute('''
+        SELECT p.*, r.title, r.catalog_number, comp.name as company_name
+        FROM purchases p
+        JOIN records r ON p.record_id = r.id
+        JOIN companies comp ON r.company_id = comp.id
+        WHERE p.user_id = ?
+        ORDER BY p.purchase_date DESC
+    ''', (session['user_id'],)).fetchall()
+    
+    # Подсчитываем статистику
+    total_purchases = len(purchases)
+    total_spent = sum(p['price'] for p in purchases) if purchases else 0
+    
+    conn.close()
+    return render_template('personal_cabinet.html', 
+                         user=user, 
+                         purchases=purchases,
+                         total_purchases=total_purchases,
+                         total_spent=total_spent)
+
+@app.route('/add_to_cart/<int:record_id>', methods=['POST'])
+@role_required(['buyer'])
+def add_to_cart(record_id):
+    """Добавление товара в корзину"""
+    conn = get_db_connection()
+    
+    try:
+        quantity = int(request.form['quantity'])
+        
+        # Получаем информацию о пластинке
+        record = conn.execute('SELECT * FROM records WHERE id = ?', (record_id,)).fetchone()
+        
+        if not record:
+            flash('Пластинка не найдена', 'error')
+            return redirect(url_for('catalog'))
+        
+        if record['current_stock'] < quantity:
+            flash('Недостаточно товара на складе', 'error')
+            return redirect(url_for('catalog'))
+        
+        # Проверяем, есть ли уже этот товар в корзине
+        existing_item = conn.execute('''
+            SELECT * FROM cart WHERE user_id = ? AND record_id = ?
+        ''', (session['user_id'], record_id)).fetchone()
+        
+        if existing_item:
+            # Обновляем количество
+            conn.execute('''
+                UPDATE cart SET quantity = quantity + ? WHERE user_id = ? AND record_id = ?
+            ''', (quantity, session['user_id'], record_id))
+        else:
+            # Добавляем новый товар
+            conn.execute('''
+                INSERT INTO cart (user_id, record_id, quantity)
+                VALUES (?, ?, ?)
+            ''', (session['user_id'], record_id, quantity))
+        
+        conn.commit()
+        flash(f'Товар добавлен в корзину!', 'success')
+    except Exception as e:
+        flash(f'Ошибка при добавлении в корзину: {str(e)}', 'error')
+    finally:
+        conn.close()
+    
     return redirect(url_for('catalog'))
+
+@app.route('/cart')
+@role_required(['buyer'])
+def cart():
+    """Корзина покупок"""
+    conn = get_db_connection()
+    
+    # Получаем товары в корзине
+    cart_items = conn.execute('''
+        SELECT c.*, r.title, r.catalog_number, r.retail_price, r.current_stock,
+               comp.name as company_name
+        FROM cart c
+        JOIN records r ON c.record_id = r.id
+        JOIN companies comp ON r.company_id = comp.id
+        WHERE c.user_id = ?
+        ORDER BY c.added_at DESC
+    ''', (session['user_id'],)).fetchall()
+    
+    # Подсчитываем общую сумму
+    total_amount = sum(item['retail_price'] * item['quantity'] for item in cart_items) if cart_items else 0
+    
+    conn.close()
+    return render_template('cart.html', cart_items=cart_items, total_amount=total_amount)
+
+@app.route('/decrease_cart_item/<int:cart_id>')
+@role_required(['buyer'])
+def decrease_cart_item(cart_id):
+    """Уменьшение количества товара в корзине"""
+    conn = get_db_connection()
+    
+    try:
+        # Получаем текущее количество
+        cart_item = conn.execute('SELECT quantity FROM cart WHERE id = ? AND user_id = ?', (cart_id, session['user_id'])).fetchone()
+        
+        if cart_item:
+            if cart_item['quantity'] > 1:
+                # Уменьшаем количество
+                conn.execute('UPDATE cart SET quantity = quantity - 1 WHERE id = ? AND user_id = ?', (cart_id, session['user_id']))
+                flash('Количество товара уменьшено', 'success')
+            else:
+                # Если количество = 1, удаляем товар полностью
+                conn.execute('DELETE FROM cart WHERE id = ? AND user_id = ?', (cart_id, session['user_id']))
+                flash('Товар удален из корзины', 'success')
+            
+            conn.commit()
+        else:
+            flash('Товар не найден в корзине', 'error')
+    except Exception as e:
+        flash(f'Ошибка при изменении количества: {str(e)}', 'error')
+    finally:
+        conn.close()
+    
+    return redirect(url_for('cart'))
+
+@app.route('/remove_from_cart/<int:cart_id>')
+@role_required(['buyer'])
+def remove_from_cart(cart_id):
+    """Удаление товара из корзины"""
+    conn = get_db_connection()
+    
+    try:
+        conn.execute('DELETE FROM cart WHERE id = ? AND user_id = ?', (cart_id, session['user_id']))
+        conn.commit()
+        flash('Товар удален из корзины', 'success')
+    except Exception as e:
+        flash(f'Ошибка при удалении товара: {str(e)}', 'error')
+    finally:
+        conn.close()
+    
+    return redirect(url_for('cart'))
+
+@app.route('/clear_cart')
+@role_required(['buyer'])
+def clear_cart():
+    """Очистка всей корзины"""
+    conn = get_db_connection()
+    
+    try:
+        conn.execute('DELETE FROM cart WHERE user_id = ?', (session['user_id'],))
+        conn.commit()
+        flash('Корзина успешно очищена!', 'success')
+    except Exception as e:
+        flash(f'Ошибка при очистке корзины: {str(e)}', 'error')
+    finally:
+        conn.close()
+    
+    return redirect(url_for('cart'))
+
+@app.route('/checkout', methods=['POST'])
+@role_required(['buyer'])
+def checkout():
+    """Оформление заказа из корзины"""
+    conn = get_db_connection()
+    
+    try:
+        # Получаем товары в корзине
+        cart_items = conn.execute('''
+            SELECT c.*, r.title, r.retail_price, r.current_stock
+            FROM cart c
+            JOIN records r ON c.record_id = r.id
+            WHERE c.user_id = ?
+        ''', (session['user_id'],)).fetchall()
+        
+        if not cart_items:
+            flash('Корзина пуста', 'error')
+            return redirect(url_for('cart'))
+        
+        # Проверяем наличие товаров
+        for item in cart_items:
+            if item['current_stock'] < item['quantity']:
+                flash(f'Недостаточно товара "{item["title"]}" на складе', 'error')
+                return redirect(url_for('cart'))
+        
+        # Создаем покупки
+        total_amount = 0
+        for item in cart_items:
+            price = item['retail_price'] * item['quantity']
+            total_amount += price
+            
+            conn.execute('''
+                INSERT INTO purchases (user_id, record_id, quantity, price, seller_id)
+                VALUES (?, ?, ?, ?, ?)
+            ''', (session['user_id'], item['record_id'], item['quantity'], price, None))
+            
+            # Обновляем остаток
+            conn.execute('''
+                UPDATE records 
+                SET current_stock = current_stock - ?, 
+                    sold_this_year = sold_this_year + ?
+                WHERE id = ?
+            ''', (item['quantity'], item['quantity'], item['record_id']))
+        
+        # Очищаем корзину
+        conn.execute('DELETE FROM cart WHERE user_id = ?', (session['user_id'],))
+        
+        conn.commit()
+        flash(f'Заказ успешно оформлен! Общая сумма: {total_amount:.2f} ₽', 'success')
+    except Exception as e:
+        flash(f'Ошибка при оформлении заказа: {str(e)}', 'error')
+    finally:
+        conn.close()
+    
+    return redirect(url_for('personal_cabinet'))
 
 if __name__ == '__main__':
     # Инициализируем базу данных если её нет

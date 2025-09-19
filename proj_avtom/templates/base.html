@@ -3,86 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Музыкальный магазин{% endblock %}</title>
+    <title>{% block title %}Музыкальный магазин "Мелодия"{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <div class="nav-logo">
-                <i class="fas fa-music"></i>
-                <span>Музыкальный магазин</span>
+            <div class="nav-brand">
+                <div class="brand-icon">
+                    <i class="fas fa-music"></i>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-name">Мелодия</span>
+                    <span class="brand-subtitle">Музыкальный магазин</span>
+                </div>
             </div>
-            <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="{{ url_for('index') }}" class="nav-link">
-                        <i class="fas fa-home"></i> Главная
-                    </a>
-                </li>
-                {% if session.user_id %}
-                    <li class="nav-item">
-                        <a href="{{ url_for('compositions_count') }}" class="nav-link">
-                            <i class="fas fa-list"></i> Произведения ансамбля
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ url_for('ensemble_records') }}" class="nav-link">
-                            <i class="fas fa-compact-disc"></i> Диски ансамбля
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ url_for('sales_leaders') }}" class="nav-link">
-                            <i class="fas fa-trophy"></i> Лидеры продаж
-                        </a>
-                    </li>
-                    {% if session.role == 'buyer' %}
-                        <li class="nav-item">
-                            <a href="{{ url_for('catalog') }}" class="nav-link">
-                                <i class="fas fa-shopping-cart"></i> Каталог
-                            </a>
-                        </li>
-                    {% endif %}
-                    {% if session.role in ['seller', 'director'] %}
-                        <li class="nav-item">
-                            <a href="{{ url_for('manage_records') }}" class="nav-link">
-                                <i class="fas fa-edit"></i> Управление дисками
-                            </a>
-                        </li>
-                    {% endif %}
-                    {% if session.role == 'director' %}
-                        <li class="nav-item">
-                            <a href="{{ url_for('manage_ensembles') }}" class="nav-link">
-                                <i class="fas fa-users"></i> Управление ансамблями
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ url_for('manage_users') }}" class="nav-link">
-                                <i class="fas fa-user-cog"></i> Управление пользователями
-                            </a>
-                        </li>
-                    {% endif %}
-                {% endif %}
-            </ul>
             
-            <div class="nav-user">
-                {% if session.user_id %}
-                    <div class="user-info">
-                        <span class="user-name">{{ session.username }}</span>
-                        <span class="user-role">{{ session.role }}</span>
-                    </div>
-                    <a href="{{ url_for('logout') }}" class="btn btn-sm btn-outline">
-                        <i class="fas fa-sign-out-alt"></i> Выход
-                    </a>
-                {% else %}
-                    <a href="{{ url_for('login') }}" class="btn btn-sm btn-primary">
-                        <i class="fas fa-sign-in-alt"></i> Вход
-                    </a>
-                    <a href="{{ url_for('register') }}" class="btn btn-sm btn-outline">
-                        <i class="fas fa-user-plus"></i> Регистрация
-                    </a>
-                {% endif %}
+            <div class="nav-content">
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="{{ url_for('index') }}" class="nav-link">
+                            <i class="fas fa-home"></i>
+                            <span>Главная</span>
+                        </a>
+                    </li>
+                    {% if session.user_id %}
+                        <li class="nav-item">
+                            <a href="{{ url_for('compositions_count') }}" class="nav-link">
+                                <i class="fas fa-list"></i>
+                                <span>Произведения</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url_for('ensemble_records') }}" class="nav-link">
+                                <i class="fas fa-compact-disc"></i>
+                                <span>Диски</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ url_for('sales_leaders') }}" class="nav-link">
+                                <i class="fas fa-trophy"></i>
+                                <span>Лидеры</span>
+                            </a>
+                        </li>
+                        {% if session.role == 'buyer' %}
+                            <li class="nav-item">
+                                <a href="{{ url_for('catalog') }}" class="nav-link">
+                                    <i class="fas fa-store"></i>
+                                    <span>Каталог</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ url_for('cart') }}" class="nav-link cart-link">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span>Корзина</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ url_for('personal_cabinet') }}" class="nav-link">
+                                    <i class="fas fa-user-circle"></i>
+                                    <span>Кабинет</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if session.role in ['seller', 'director'] %}
+                            <li class="nav-item">
+                                <a href="{{ url_for('manage_records') }}" class="nav-link">
+                                    <i class="fas fa-edit"></i>
+                                    <span>Диски</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if session.role == 'director' %}
+                            <li class="nav-item">
+                                <a href="{{ url_for('manage_ensembles') }}" class="nav-link">
+                                    <i class="fas fa-users"></i>
+                                    <span>Ансамбли</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ url_for('manage_users') }}" class="nav-link">
+                                    <i class="fas fa-user-cog"></i>
+                                    <span>Пользователи</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+                
+                <div class="nav-user">
+                    {% if session.user_id %}
+                        <div class="user-profile">
+                            <div class="user-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="user-details">
+                                <span class="user-name">{{ session.username }}</span>
+                                <span class="user-role">{{ session.role }}</span>
+                            </div>
+                        </div>
+                        <a href="{{ url_for('logout') }}" class="btn btn-outline btn-sm">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Выход</span>
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Вход</span>
+                        </a>
+                        <a href="{{ url_for('register') }}" class="btn btn-outline btn-sm">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Регистрация</span>
+                        </a>
+                    {% endif %}
+                </div>
             </div>
+            
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
     </nav>
 
@@ -110,5 +150,25 @@
     </footer>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        function toggleMobileMenu() {
+            const navContent = document.querySelector('.nav-content');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            
+            navContent.classList.toggle('mobile-open');
+            toggle.classList.toggle('active');
+        }
+        
+        // Закрытие мобильного меню при клике вне его
+        document.addEventListener('click', function(event) {
+            const navContent = document.querySelector('.nav-content');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            
+            if (!navContent.contains(event.target) && !toggle.contains(event.target)) {
+                navContent.classList.remove('mobile-open');
+                toggle.classList.remove('active');
+            }
+        });
+    </script>
 </body>
 </html>

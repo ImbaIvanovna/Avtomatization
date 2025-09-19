@@ -134,3 +134,4 @@ WHERE r.sold_this_year > 0
 ORDER BY r.sold_this_year DESC
 LIMIT 10
 ```
+

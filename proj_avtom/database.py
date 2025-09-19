@@ -148,6 +148,19 @@ def init_database():
         )
     ''')
     
+    # Таблица корзины
+    cursor.execute('''
+        CREATE TABLE cart (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            record_id INTEGER NOT NULL,
+            quantity INTEGER NOT NULL DEFAULT 1,
+            added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users (id),
+            FOREIGN KEY (record_id) REFERENCES records (id)
+        )
+    ''')
+    
     # Вставляем тестовые данные
     insert_test_data(cursor)
     

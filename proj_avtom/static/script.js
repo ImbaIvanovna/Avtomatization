@@ -305,3 +305,4 @@ window.sortTable = sortTable;
 window.showLoading = showLoading;
 window.hideLoading = hideLoading;
 window.showNotification = showNotification;
+
