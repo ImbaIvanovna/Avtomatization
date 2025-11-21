@@ -98,3 +98,6 @@ docker-compose up --build
 # На Linux/Mac может потребоваться изменить права
 sudo chown -R $USER:$USER data/
 ```
+
+
+
