@@ -7,15 +7,15 @@ services:
       - "5000:5000"
     volumes:
       # Персистентное хранение базы данных (важно для сохранения пользователей)
-      - ./data/music_store.db:/app/music_store.db
-      # Логи приложение
+      - ./data:/app/data
+      # Логи приложения
       - ./logs:/app/logs
       # Статические файлы (только для production)
       - ./static:/app/static:ro
       - ./templates:/app/templates:ro
     environment:
       - FLASK_ENV=production
-      - DATABASE_PATH=/app/music_store.db
+      - DATABASE_PATH=/app/data/music_store.db
       - SECRET_KEY=${SECRET_KEY:-your-secret-key-change-in-production}
     restart: unless-stopped
     healthcheck:
