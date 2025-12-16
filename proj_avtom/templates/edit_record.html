@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Редактировать пластинку - Музыкальный магазин "Мелодия"{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">
+            <i class="fas fa-edit"></i>
+            Редактировать пластинку
+        </h1>
+        <p class="card-subtitle">
+            Изменение данных о пластинке "{{ record.title }}"
+        </p>
+    </div>
+    
+    <form method="POST" action="{{ url_for('update_record', record_id=record.id) }}">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="catalog_number" class="form-label">Каталожный номер *</label>
+                <input type="text" name="catalog_number" id="catalog_number" class="form-control" 
+                       value="{{ record.catalog_number }}" required>
+            </div>
+            <div class="form-group">
+                <label for="title" class="form-label">Название *</label>
+                <input type="text" name="title" id="title" class="form-control" 
+                       value="{{ record.title }}" required>
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="company_id" class="form-label">Компания *</label>
+                <div class="select-wrapper">
+                    <select name="company_id" id="company_id" class="form-control select" required>
+                        <option value="">-- Выберите компанию --</option>
+                        {% for company in companies %}
+                            <option value="{{ company.id }}" 
+                                    {% if company.id == record.company_id %}selected{% endif %}>
+                                {{ company.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="release_date" class="form-label">Дата выпуска</label>
+                <input type="date" name="release_date" id="release_date" class="form-control" 
+                       value="{{ record.release_date or '' }}">
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="wholesale_price" class="form-label">Оптовая цена (₽) *</label>
+                <input type="number" name="wholesale_price" id="wholesale_price" class="form-control" 
+                       step="0.01" min="0" value="{{ record.wholesale_price }}" required>
+            </div>
+            <div class="form-group">
+                <label for="retail_price" class="form-label">Розничная цена (₽) *</label>
+                <input type="number" name="retail_price" id="retail_price" class="form-control" 
+                       step="0.01" min="0" value="{{ record.retail_price }}" required>
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="current_stock" class="form-label">Текущий остаток *</label>
+                <input type="number" name="current_stock" id="current_stock" class="form-control" 
+                       min="0" value="{{ record.current_stock }}" required>
+            </div>
+            <div class="form-group">
+                <label for="sold_last_year" class="form-label">Продано в прошлом году</label>
+                <input type="number" name="sold_last_year" id="sold_last_year" class="form-control" 
+                       min="0" value="{{ record.sold_last_year }}">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="sold_this_year" class="form-label">Продано в текущем году</label>
+            <input type="number" name="sold_this_year" id="sold_this_year" class="form-control" 
+                   min="0" value="{{ record.sold_this_year }}">
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-save"></i>
+                Сохранить изменения
+            </button>
+            <a href="{{ url_for('manage_records') }}" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i>
+                Назад к списку
+            </a>
+        </div>
+    </form>
+</div>
+
+<style>
+.form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid #e9ecef;
+}
+
+@media (max-width: 768px) {
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .form-actions .btn {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}
+
