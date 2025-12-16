@@ -36,7 +36,7 @@ CREATE TABLE ensemble_members (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             ensemble_id INTEGER NOT NULL,
             musician_id INTEGER NOT NULL,
-            role_in_ensemble TEXT,  -- роль в ансамбле
+            role_in_ensemble TEXT, 
             joined_year INTEGER,
             FOREIGN KEY (ensemble_id) REFERENCES ensembles (id),
             FOREIGN KEY (musician_id) REFERENCES musicians (id)
