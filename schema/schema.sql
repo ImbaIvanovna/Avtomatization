@@ -7,8 +7,6 @@ CREATE TABLE cart (
             FOREIGN KEY (user_id) REFERENCES users (id),
             FOREIGN KEY (record_id) REFERENCES records (id)
         )
-
-
 CREATE TABLE companies (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
@@ -17,7 +15,6 @@ CREATE TABLE companies (
             email TEXT,
             is_wholesaler BOOLEAN DEFAULT 0
         )
-
 CREATE TABLE compositions (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
@@ -27,7 +24,6 @@ CREATE TABLE compositions (
             duration_minutes INTEGER,
             FOREIGN KEY (composer_id) REFERENCES musicians (id)
         )
-
 CREATE TABLE ensemble_members (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             ensemble_id INTEGER NOT NULL,
@@ -37,8 +33,6 @@ CREATE TABLE ensemble_members (
             FOREIGN KEY (ensemble_id) REFERENCES ensembles (id),
             FOREIGN KEY (musician_id) REFERENCES musicians (id)
         )
-
-
 CREATE TABLE ensembles (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
@@ -47,8 +41,6 @@ CREATE TABLE ensembles (
             country TEXT,
             description TEXT
         )
-
-
 CREATE TABLE musicians (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
@@ -57,7 +49,6 @@ CREATE TABLE musicians (
             birth_year INTEGER,
             country TEXT
         )
-
 CREATE TABLE performances (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             composition_id INTEGER NOT NULL,
@@ -69,8 +60,6 @@ CREATE TABLE performances (
             FOREIGN KEY (ensemble_id) REFERENCES ensembles (id),
             FOREIGN KEY (conductor_id) REFERENCES musicians (id)
         )
-
-
 CREATE TABLE purchases (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER NOT NULL,
@@ -83,7 +72,6 @@ CREATE TABLE purchases (
             FOREIGN KEY (record_id) REFERENCES records (id),
             FOREIGN KEY (seller_id) REFERENCES users (id)
         )
-
 CREATE TABLE record_tracks (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             record_id INTEGER NOT NULL,
@@ -92,8 +80,6 @@ CREATE TABLE record_tracks (
             FOREIGN KEY (record_id) REFERENCES records (id),
             FOREIGN KEY (performance_id) REFERENCES performances (id)
         )
-
-
 CREATE TABLE records (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             catalog_number TEXT NOT NULL UNIQUE,
@@ -108,11 +94,7 @@ CREATE TABLE records (
             rating DECIMAL(3,2) DEFAULT NULL,
             FOREIGN KEY (company_id) REFERENCES companies (id)
         )
-
-
 CREATE TABLE sqlite_sequence(name,seq)
-
-
 CREATE TABLE users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT NOT NULL UNIQUE,
