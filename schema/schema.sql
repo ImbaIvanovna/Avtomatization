@@ -1,7 +1,3 @@
-
-
-
-
 CREATE TABLE cart (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER NOT NULL,
