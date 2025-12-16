@@ -1,7 +1,7 @@
 
--- Дата выгрузки: 16.12.2025
 
--- Таблица: cart
+
+
 CREATE TABLE cart (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE cart (
             FOREIGN KEY (record_id) REFERENCES records (id)
         )
 
--- Таблица: companies
+
 CREATE TABLE companies (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
@@ -22,7 +22,6 @@ CREATE TABLE companies (
             is_wholesaler BOOLEAN DEFAULT 0
         )
 
--- Таблица: compositions
 CREATE TABLE compositions (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
@@ -33,7 +32,6 @@ CREATE TABLE compositions (
             FOREIGN KEY (composer_id) REFERENCES musicians (id)
         )
 
--- Таблица: ensemble_members
 CREATE TABLE ensemble_members (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             ensemble_id INTEGER NOT NULL,
@@ -44,27 +42,26 @@ CREATE TABLE ensemble_members (
             FOREIGN KEY (musician_id) REFERENCES musicians (id)
         )
 
--- Таблица: ensembles
+
 CREATE TABLE ensembles (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
-            type TEXT NOT NULL,  -- оркестр, джазовая группа, квартет, квинтет и т.д.
+            type TEXT NOT NULL, 
             founded_year INTEGER,
             country TEXT,
             description TEXT
         )
 
--- Таблица: musicians
+
 CREATE TABLE musicians (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
-            role TEXT NOT NULL,  -- исполнитель, композитор, дирижер, руководитель
-            instruments TEXT,    -- инструменты для исполнителей
+            role TEXT NOT NULL,  
+            instruments TEXT,   
             birth_year INTEGER,
             country TEXT
         )
 
--- Таблица: performances
 CREATE TABLE performances (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             composition_id INTEGER NOT NULL,
@@ -77,7 +74,7 @@ CREATE TABLE performances (
             FOREIGN KEY (conductor_id) REFERENCES musicians (id)
         )
 
--- Таблица: purchases
+
 CREATE TABLE purchases (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER NOT NULL,
@@ -91,7 +88,6 @@ CREATE TABLE purchases (
             FOREIGN KEY (seller_id) REFERENCES users (id)
         )
 
--- Таблица: record_tracks
 CREATE TABLE record_tracks (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             record_id INTEGER NOT NULL,
@@ -101,7 +97,7 @@ CREATE TABLE record_tracks (
             FOREIGN KEY (performance_id) REFERENCES performances (id)
         )
 
--- Таблица: records
+
 CREATE TABLE records (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             catalog_number TEXT NOT NULL UNIQUE,
@@ -117,10 +113,10 @@ CREATE TABLE records (
             FOREIGN KEY (company_id) REFERENCES companies (id)
         )
 
--- Таблица: sqlite_sequence
+
 CREATE TABLE sqlite_sequence(name,seq)
 
--- Таблица: users
+
 CREATE TABLE users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT NOT NULL UNIQUE,
