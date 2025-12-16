@@ -37,7 +37,6 @@ CREATE TABLE users (
     is_active BOOLEAN DEFAULT 1
 );
 
--- 2. Таблицы первого уровня зависимостей
 CREATE TABLE compositions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
@@ -63,7 +62,6 @@ CREATE TABLE records (
     FOREIGN KEY (company_id) REFERENCES companies (id)
 );
 
--- 3. Таблицы второго уровня зависимостей
 CREATE TABLE performances (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     composition_id INTEGER NOT NULL,
@@ -76,7 +74,6 @@ CREATE TABLE performances (
     FOREIGN KEY (conductor_id) REFERENCES musicians (id)
 );
 
--- 4. Таблицы третьего уровня и связующие
 CREATE TABLE ensemble_members (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     ensemble_id INTEGER NOT NULL,
@@ -96,7 +93,6 @@ CREATE TABLE record_tracks (
     FOREIGN KEY (performance_id) REFERENCES performances (id)
 );
 
--- 5. Пользовательские данные
 CREATE TABLE cart (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
